@@ -57,27 +57,27 @@ app.use(
 app.use(express.json({ limit: "50mb" }));
 
 // Apply adminAuthMiddleware to all /api/admin routes
-app.use("/api/admin", adminAuthMiddleware);
+app.use("/admin", adminAuthMiddleware);
 
 // Admin Routes
-app.use("/api/admin", productRoutes);
-app.use("/api/admin", reviewRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api/admin", categoryRoutes);
-app.use("/api/admin", subCategoryRoutes);
-app.use("/api/admin/cart", adminCartRouter);
-app.use("/api/admin/address", adminAddressRouter);
-app.use("/api/admin/order", adminOrederRouter);
+app.use("/admin", productRoutes);
+app.use("/admin", reviewRoutes);
+app.use("/admin", adminRoutes);
+app.use("/admin", categoryRoutes);
+app.use("/admin", subCategoryRoutes);
+app.use("/admin/cart", adminCartRouter);
+app.use("/admin/address", adminAddressRouter);
+app.use("/admin/order", adminOrederRouter);
 
 // Common Routes
-app.use("/api", commonRoutes);
-app.use("/api", commonReviewsRoutes);
-app.use("/api/product", commonproductRoutes);
-app.use("/api/category", commonCategoryRoutes);
-app.use("/api/subcategory", commonSubCategoryRoutes);
-app.use("/api/cart", checkToken, commonCartRoutes);
-app.use("/api/address", checkToken, commonAddressRoutes);
-app.use("/api/order", checkToken, commonOrederRoutes);
+app.use("", commonRoutes);
+app.use("", commonReviewsRoutes);
+app.use("/product", commonproductRoutes);
+app.use("/category", commonCategoryRoutes);
+app.use("/subcategory", commonSubCategoryRoutes);
+app.use("/cart", checkToken, commonCartRoutes);
+app.use("/address", checkToken, commonAddressRoutes);
+app.use("/order", checkToken, commonOrederRoutes);
 // Error Handler Middleware
 app.use(errorHandler);
 
