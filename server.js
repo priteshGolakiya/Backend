@@ -70,8 +70,8 @@ app.use("/admin/address", adminAddressRouter);
 app.use("/admin/order", adminOrederRouter);
 
 // Common Routes
-app.use("", commonRoutes);
-app.use("", commonReviewsRoutes);
+app.use("/", commonRoutes);
+app.use("/", commonReviewsRoutes);
 app.use("/product", commonproductRoutes);
 app.use("/category", commonCategoryRoutes);
 app.use("/subcategory", commonSubCategoryRoutes);
