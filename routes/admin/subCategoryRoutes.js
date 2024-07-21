@@ -10,10 +10,10 @@ const {
 } = require("../../controller/admin/subCategory/subCategory");
 
 router.post("/createAllSubcategories", createAllSubcategories);
-router.get("/subcategory", getAllSubcategories);
-router.get("/subcategory/:id", getSubcategoryById);
-router.post("/subcategory/:categoryId", createSubcategory);
-router.put("/subcategory/:id", updateSubcategory);
-router.delete("/subcategory/:id", deleteSubcategory);
+router.get("/", getAllSubcategories);
+router.get("/:id", getSubcategoryById);
+router.post("/:categoryId", createSubcategory);
+router.put("/:id", updateSubcategory);
+router.delete("/:id", deleteSubcategory);
 
 module.exports = router;

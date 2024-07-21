@@ -10,12 +10,12 @@ const checkToken = require("../../middleware/authToken.js");
 const router = express.Router();
 
 // getAllReviews
-router.get("/reviews", getAllReviews);
+router.get("/", getAllReviews);
 
 // Create
-router.post("/reviews", checkToken, addReview);
+router.post("/", checkToken, addReview);
 
 // Read
-router.get("/reviews/:productId", getReviews);
+router.get("/:productId", getReviews);
 
 module.exports = router;

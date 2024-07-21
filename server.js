@@ -60,18 +60,18 @@ app.use(express.json({ limit: "50mb" }));
 app.use("/admin", adminAuthMiddleware);
 
 // Admin Routes
-app.use("/admin", productRoutes);
-app.use("/admin", reviewRoutes);
 app.use("/admin", adminRoutes);
-app.use("/admin", categoryRoutes);
-app.use("/admin", subCategoryRoutes);
+app.use("/admin/product", productRoutes);
+app.use("/admin/reviews", reviewRoutes);
+app.use("/admin/category", categoryRoutes);
+app.use("/admin/subcategory", subCategoryRoutes);
 app.use("/admin/cart", adminCartRouter);
 app.use("/admin/address", adminAddressRouter);
 app.use("/admin/order", adminOrederRouter);
 
 // Common Routes
 app.use("/", commonRoutes);
-app.use("/", commonReviewsRoutes);
+app.use("/reviews", commonReviewsRoutes);
 app.use("/product", commonproductRoutes);
 app.use("/category", commonCategoryRoutes);
 app.use("/subcategory", commonSubCategoryRoutes);

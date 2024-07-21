@@ -9,12 +9,12 @@ const {
 } = require("../../controller/admin/product/productController");
 
 // Public routes
-router.get("/product/", getAllProducts);
-router.get("/product/:id", getProductById);
+router.get("/", getAllProducts);
+router.get("/:id", getProductById);
 
 // Admin routes
-router.post("/product/", createProduct);
-router.put("/product/:id", updateProduct);
-router.delete("/product/:id", deleteProduct);
+router.post("/", createProduct);
+router.put("/:id", updateProduct);
+router.delete("/:id", deleteProduct);
 
 module.exports = router;

@@ -10,18 +10,18 @@ const {
 const router = express.Router();
 
 // getAllReviews
-router.get("/reviews", getAllReviews);
+router.get("/", getAllReviews);
 
 // Create
-router.post("/reviews", addReview);
+router.post("/", addReview);
 
 // Read
-router.get("/reviews/:productId", getReviews);
+router.get("/:productId", getReviews);
 
 // Update
-router.put("/reviews/:reviewId", updateReview);
+router.put("/:reviewId", updateReview);
 
 // Delete
-router.delete("/reviews/:reviewId", deleteReview);
+router.delete("/:reviewId", deleteReview);
 
 module.exports = router;
