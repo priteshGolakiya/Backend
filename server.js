@@ -29,30 +29,30 @@ const app = express();
 
 // Middleware
 app.use(cookieParser());
-// app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
-// const allowedOrigins = [process.env.FRONTEND_URL, process.env.FRONTEND_URL2];
-
-// app.use(
-//   cors({
-//     origin: (origin, callback) => {
-//       if (allowedOrigins.includes(origin) || !origin) {
-//         callback(null, true);
-//       } else {
-//         callback(new Error("Not allowed by CORS"));
-//       }
-//     },
-//     credentials: true,
-//   })
-// );
+app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
+const allowedOrigins = [process.env.FRONTEND_URL, process.env.FRONTEND_URL2];
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      callback(null, true);
+      if (allowedOrigins.includes(origin) || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
     },
     credentials: true,
   })
 );
+
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       callback(null, true);
+//     },
+//     credentials: true,
+//   })
+// );
 
 app.use(express.json({ limit: "50mb" }));
 
