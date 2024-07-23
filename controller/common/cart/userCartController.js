@@ -26,6 +26,9 @@ const addToCart = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
+    // Assuming there is a discounted price available, use it; otherwise, fallback to regular price
+    const priceToUse = product.finalPrice || product.price;
+
     let cart = await Cart.findOne({ user: req.userId });
 
     if (!cart) {
@@ -42,10 +45,11 @@ const addToCart = async (req, res) => {
       cart.items.push({
         product: productId,
         quantity,
-        price: Number(product.price),
+        price: Number(priceToUse),
       });
     }
 
+    // Calculate total price with potentially discounted prices
     cart.totalPrice = cart.items.reduce(
       (total, item) => total + (Number(item.price) || 0) * item.quantity,
       0
@@ -59,6 +63,7 @@ const addToCart = async (req, res) => {
       .json({ message: "Error adding item to cart", error: error.message });
   }
 };
+
 const updateCartItem = async (req, res) => {
   try {
     const { productId, quantity } = req.body;
