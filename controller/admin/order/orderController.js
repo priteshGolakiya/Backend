@@ -52,7 +52,7 @@ const getOrderDetails = async (req, res) => {
       .populate("user", "username email")
       .populate({
         path: "orderItems.product",
-        select: "name price description image",
+        select: "name price totalAmount finalPrice description image",
       })
       .populate("shippingAddress");
 
