@@ -7,7 +7,7 @@ const Product = require("../../../models/productModel");
 const createOrder = async (req, res) => {
   try {
     const userId = req.userId;
-    const { cartItems, shippingAddressId, totalAmount } = req.body;
+    const { cartItems, shippingAddressId, totalAmount, quantity } = req.body;
 
     const address = await Address.findOne({
       _id: shippingAddressId,
@@ -23,6 +23,9 @@ const createOrder = async (req, res) => {
         const product = await Product.findById(item.product);
         if (!product) {
           throw new Error(`Product not found: ${item.product}`);
+        }
+        if (product.stock < item.quantity) {
+          throw new Error(`Insufficient stock for product: ${item.product}`);
         }
         return {
           product: product._id,
@@ -41,6 +44,14 @@ const createOrder = async (req, res) => {
     });
 
     await order.save();
+
+    await Promise.all(
+      orderItems.map(async (item) => {
+        await Product.findByIdAndUpdate(item.product, {
+          $inc: { stock: -item.quantity },
+        });
+      })
+    );
 
     res.status(201).json({ message: "Order created successfully", order });
   } catch (error) {
