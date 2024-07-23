@@ -29,6 +29,7 @@ const app = express();
 
 // Middleware
 app.use(cookieParser());
+
 // app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 // const allowedOrigins = [process.env.FRONTEND_URL, process.env.FRONTEND_URL2];
 
