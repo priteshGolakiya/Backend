@@ -39,11 +39,15 @@ const addToCart = async (req, res) => {
     if (existingItem) {
       existingItem.quantity += quantity;
     } else {
-      cart.items.push({ product: productId, quantity, price: product.price });
+      cart.items.push({
+        product: productId,
+        quantity,
+        price: Number(product.price),
+      });
     }
 
     cart.totalPrice = cart.items.reduce(
-      (total, item) => total + item.finalPrice * item.quantity,
+      (total, item) => total + (Number(item.price) || 0) * item.quantity,
       0
     );
 
@@ -55,7 +59,6 @@ const addToCart = async (req, res) => {
       .json({ message: "Error adding item to cart", error: error.message });
   }
 };
-
 const updateCartItem = async (req, res) => {
   try {
     const { productId, quantity } = req.body;
