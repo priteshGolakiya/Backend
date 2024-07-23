@@ -43,7 +43,7 @@ const addToCart = async (req, res) => {
     }
 
     cart.totalPrice = cart.items.reduce(
-      (total, item) => total + item.price * item.quantity,
+      (total, item) => total + item.finalPrice * item.quantity,
       0
     );
 
