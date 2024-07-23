@@ -6,6 +6,7 @@ const connectDB = require("./db/connection");
 const errorHandler = require("./middleware/errorHandler");
 const adminAuthMiddleware = require("./middleware/adminAuthMiddleware");
 const checkToken = require("./middleware/authToken");
+
 // ------------------COMMON IMPORTS------------------
 const commonRoutes = require("./routes/common/common");
 const commonproductRoutes = require("./routes/common/productRoutes");

@@ -5,6 +5,7 @@ const {
   updateOrderStatus,
   getOrderDetails,
   getOrderStats,
+  deleteOrder,
 } = require("../../controller/admin/order/orderController");
 const adminAuthMiddleware = require("../../middleware/adminAuthMiddleware");
 
@@ -14,5 +15,6 @@ router.get("/", getAllOrders);
 router.get("/stats", getOrderStats);
 router.get("/:orderId", getOrderDetails);
 router.post("/:orderId/status", updateOrderStatus);
+router.delete("/:orderId", deleteOrder);
 
 module.exports = router;
