@@ -17,34 +17,22 @@ const populateProduct = (query) => {
 // Get paginated products without reviews
 const getPaginatedProducts = async (req, res) => {
   try {
-    const { page = 1, limit = 10, sort = "createdAt" } = req.query;
-
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
     const skip = (page - 1) * limit;
 
-    let searchCriteria = {};
-
-    const sortOptions = {};
-    if (sort) {
-      if (sort.startsWith("-")) {
-        sortOptions[sort.substring(1)] = -1;
-      } else {
-        sortOptions[sort] = 1;
-      }
-    }
-
-    const products = await Product.find(searchCriteria)
-      .sort(sortOptions)
+    const products = await Product.find()
       .skip(skip)
-      .limit(Number(limit))
+      .limit(limit)
       .lean();
 
-    const total = await Product.countDocuments(searchCriteria);
+    const total = await Product.countDocuments();
 
     res.status(200).json({
       products,
+      currentPage: page,
       totalPages: Math.ceil(total / limit),
-      currentPage: Number(page),
-      totalProducts: total,
+      totalProducts: total
     });
   } catch (error) {
     console.error(`Error fetching paginated products: ${error.message}`);
