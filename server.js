@@ -92,7 +92,8 @@ const cache = (duration) => {
         return next();
       }
 
-      const cachedBody = await getRedisClient.get(key);
+      // Change this line:
+      const cachedBody = await redisClient.get(key);
       console.log(`Cache result for ${key}:`, cachedBody ? "Hit" : "Miss");
 
       if (cachedBody) {
