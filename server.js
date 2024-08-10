@@ -56,30 +56,26 @@ const cache = (duration) => {
     }
 
     const key = `express:${req.originalUrl || req.url}`;
+
     try {
       const cachedBody = await redisClient.get(key);
       if (cachedBody) {
-        console.log("Response served from Redis cache:", key);
+        console.log(`Response for ${key} served from Redis cache`);
         return res.json(JSON.parse(cachedBody));
       }
 
-      // Store the original json method
+      console.log(`Cache miss for ${key}, fetching from controller`);
+
       const originalJson = res.json;
 
-      // Override the json method
       res.json = function (body) {
-        // Reset json to its original method immediately
         res.json = originalJson;
 
-        // Cache the response
         redisClient.setEx(key, duration, JSON.stringify(body)).catch((err) => {
           console.error("Redis cache error:", err);
         });
 
-        // Log that the response is coming from the controller
-        console.log("Response served from controller and cached:", key);
-
-        // Send the response
+        console.log(`Response for ${key} served from controller and cached`);
         return originalJson.call(this, body);
       };
 
