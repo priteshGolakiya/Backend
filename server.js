@@ -26,27 +26,12 @@ const subCategoryRoutes = require("./routes/admin/subCategoryRoutes");
 const productRoutes = require("./routes/admin/productRoutes");
 const reviewRoutes = require("./routes/admin/reviewRoutes");
 const adminOrederRouter = require("./routes/admin/adminOrderRoutes.js");
+const cache = require("./middleware/cacheMiddleware.js");
+const { createClient } = require("redis");
 const app = express();
 
 // Middleware
 app.use(cookieParser());
-
-// app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
-// const allowedOrigins = [process.env.FRONTEND_URL, process.env.FRONTEND_URL2];
-
-// app.use(
-//   cors({
-//     origin: (origin, callback) => {
-//       if (allowedOrigins.includes(origin) || !origin) {
-//         callback(null, true);
-//       } else {
-//         callback(new Error("Not allowed by CORS"));
-//       }
-//     },
-//     credentials: true,
-//   })
-// );
-
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -61,6 +46,43 @@ app.use(express.json({ limit: "50mb" }));
 // Apply adminAuthMiddleware to all /api/admin routes
 app.use("/admin", adminAuthMiddleware);
 
+// Create Redis client
+const redisClient = createClient({
+  url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+  password: process.env.REDIS_PASSWORD,
+  socket: {
+    connectTimeout: 10000,
+    keepAlive: 5000,
+    reconnectStrategy: (retries) => Math.min(retries * 50, 1000),
+  },
+});
+// Connect to Redis
+(async () => {
+  try {
+    await redisClient.connect();
+    console.log("Connected to Redis in");
+  } catch (error) {
+    console.error("Failed to connect to Redis:", error);
+  }
+})();
+
+redisClient.on("connect", () => {
+  console.log("Redis client connected");
+});
+
+redisClient.on("error", (error) => {
+  console.error("Redis error:", error);
+});
+
+redisClient.on("end", () => {
+  console.log("Redis connection closed");
+});
+
+process.on("SIGINT", async () => {
+  await redisClient.quit();
+  process.exit(0);
+});
+
 // Admin Routes
 app.use("/admin", adminRoutes);
 app.use("/admin/product", productRoutes);
@@ -72,14 +94,14 @@ app.use("/admin/address", adminAddressRouter);
 app.use("/admin/order", adminOrederRouter);
 
 // Common Routes
-app.use("/", commonRoutes);
-app.use("/reviews", commonReviewsRoutes);
-app.use("/product", commonproductRoutes);
-app.use("/category", commonCategoryRoutes);
-app.use("/subcategory", commonSubCategoryRoutes);
-app.use("/cart", checkToken, commonCartRoutes);
-app.use("/address", checkToken, commonAddressRoutes);
-app.use("/order", checkToken, commonOrederRoutes);
+app.use("/", cache(900), commonRoutes);
+app.use("/reviews", cache(900), commonReviewsRoutes);
+app.use("/product", cache(900), commonproductRoutes);
+app.use("/category", cache(900), commonCategoryRoutes);
+app.use("/subcategory", cache(900), commonSubCategoryRoutes);
+app.use("/cart", checkToken, cache(900), commonCartRoutes);
+app.use("/address", checkToken, cache(900), commonAddressRoutes);
+app.use("/order", checkToken, cache(900), commonOrederRoutes);
 // Error Handler Middleware
 app.use(errorHandler);
 

@@ -146,6 +146,7 @@ const createAllCategories = asyncHandler(async (req, res) => {
     const categoriesToCreate = categoryNames.filter(
       (name) => !existingCategories.find((cat) => cat.name === name)
     );
+    
     const createdCategories = await Category.insertMany(
       categoriesToCreate.map((name) => ({ name }))
     );
