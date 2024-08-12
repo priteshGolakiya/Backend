@@ -100,7 +100,7 @@ app.use("/admin/address", adminAddressRouter);
 app.use("/admin/order", adminOrderRouter);
 
 // Common Routes
-app.use("/", cache(900), commonRoutes);
+app.use("/", commonRoutes);
 app.use("/reviews", cache(900), commonReviewsRoutes);
 app.use("/product", cache(900), commonproductRoutes);
 app.use("/category", cache(900), commonCategoryRoutes);
