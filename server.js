@@ -39,55 +39,55 @@ app.use(express.json({ limit: "50mb" }));
 app.use("/admin", adminAuthMiddleware);
 
 // Redis setup
-const redisClient = createClient({
-  url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
-  password: process.env.REDIS_PASSWORD,
-});
+// const redisClient = createClient({
+//   url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+//   password: process.env.REDIS_PASSWORD,
+// });
 
-redisClient.on("error", (error) => console.error("Redis error:", error));
-redisClient.on("connect", () => console.log("Redis client connected"));
-redisClient.on("end", () => console.log("Redis connection closed"));
+// redisClient.on("error", (error) => console.error("Redis error:", error));
+// redisClient.on("connect", () => console.log("Redis client connected"));
+// redisClient.on("end", () => console.log("Redis connection closed"));
 
 // Cache middleware
-const cache = (duration) => {
-  return async (req, res, next) => {
-    if (req.method !== "GET") {
-      return next();
-    }
+// const cache = (duration) => {
+//   return async (req, res, next) => {
+//     if (req.method !== "GET") {
+//       return next();
+//     }
 
-    const key = `express:${req.originalUrl || req.url}`;
+//     const key = `express:${req.originalUrl || req.url}`;
 
-    try {
-      const cachedBody = await redisClient.get(key);
-      if (cachedBody) {
-        console.log(`Response for ${key} served from Redis cache`);
-        return res.json(JSON.parse(cachedBody));
-      }
+//     try {
+//       const cachedBody = await redisClient.get(key);
+//       if (cachedBody) {
+//         console.log(`Response for ${key} served from Redis cache`);
+//         return res.json(JSON.parse(cachedBody));
+//       }
 
-      console.log(`Cache miss for ${key}, fetching from controller`);
+//       console.log(`Cache miss for ${key}, fetching from controller`);
 
-      const originalJson = res.json;
+//       const originalJson = res.json;
 
-      res.json = function (body) {
-        res.json = originalJson;
+//       res.json = function (body) {
+//         res.json = originalJson;
 
-        redisClient.setEx(key, duration, JSON.stringify(body)).catch((err) => {
-          console.error("Redis cache error:", err);
-        });
+//         redisClient.setEx(key, duration, JSON.stringify(body)).catch((err) => {
+//           console.error("Redis cache error:", err);
+//         });
 
-        console.log(`Response for ${key} served from controller and cached`);
-        return originalJson.call(this, body);
-      };
+//         console.log(`Response for ${key} served from controller and cached`);
+//         return originalJson.call(this, body);
+//       };
 
-      next();
-    } catch (error) {
-      console.error("Redis cache error:", error);
-      next();
-    }
-  };
-};
+//       next();
+//     } catch (error) {
+//       console.error("Redis cache error:", error);
+//       next();
+//     }
+//   };
+// };
 
-module.exports = cache;
+// module.exports = cache;
 
 // Admin Routes
 app.use("/admin", adminRoutes);
@@ -101,13 +101,13 @@ app.use("/admin/order", adminOrderRouter);
 
 // Common Routes
 app.use("/", commonRoutes);
-app.use("/reviews", cache(900), commonReviewsRoutes);
-app.use("/product", cache(900), commonproductRoutes);
-app.use("/category", cache(900), commonCategoryRoutes);
-app.use("/subcategory", cache(900), commonSubCategoryRoutes);
-app.use("/cart", checkToken, cache(900), commonCartRoutes);
-app.use("/address", checkToken, cache(900), commonAddressRoutes);
-app.use("/order", checkToken, cache(900), commonOrderRoutes);
+app.use("/reviews",  commonReviewsRoutes);
+app.use("/product",  commonproductRoutes);
+app.use("/category",  commonCategoryRoutes);
+app.use("/subcategory",  commonSubCategoryRoutes);
+app.use("/cart", checkToken,  commonCartRoutes);
+app.use("/address", checkToken,  commonAddressRoutes);
+app.use("/order", checkToken,  commonOrderRoutes);
 
 // Error Handler Middleware
 app.use(errorHandler);
@@ -116,7 +116,7 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
-    await redisClient.connect();
+    // await redisClient.connect();
     await connectDB();
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
@@ -128,14 +128,14 @@ const startServer = async () => {
 };
 
 // Gracefully handle shutdown
-process.on("SIGINT", async () => {
-  try {
-    await redisClient.quit();
-    console.log("Redis client disconnected on app termination");
-  } catch (error) {
-    console.error("Error during Redis client disconnection:", error);
-  }
-  process.exit(0);
-});
+// process.on("SIGINT", async () => {
+//   try {
+//     await redisClient.quit();
+//     console.log("Redis client disconnected on app termination");
+//   } catch (error) {
+//     console.error("Error during Redis client disconnection:", error);
+//   }
+//   process.exit(0);
+// });
 
 startServer();
